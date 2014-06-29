@@ -1,0 +1,66 @@
+.trigger-warning-deluxe.veiled .veiled-content {
+	display: none;
+}
+
+.trigger-warning-overlay.ui-widget-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #ec7c23;
+	opacity: .8;
+	filter: Alpha(Opacity=80);
+}
+
+.trigger-warning-overlay.ui-front {
+	z-index: 999;
+}
+
+.trigger-warning-dialog.ui-widget {
+	font-size: 1.1em;
+	border: 1px solid #fce5d3;
+	background: #fff;
+	color: #222;
+	z-index: 999;
+	border-radius: 4px;
+}
+
+.trigger-warning-dialog.ui-dialog {
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: .25em;
+	outline: 0;
+	background: #de5626;
+}
+
+.trigger-warning-dialog.ui-dialog .ui-dialog-titlebar {
+	padding: .5em 1em;
+	position: relative;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+	position: absolute;
+	right: 0;
+	top: 50%;
+	margin: -1em 0 0 0;
+	padding: 1px;
+}
+
+.trigger-warning-dialog.ui-dialog .ui-dialog-title {
+	color: #222;
+	font-weight: bold;
+}
+
+.trigger-warning-dialog.ui-dialog .ui-dialog-content {
+	position: relative;
+	border: 0;
+	padding: .5em 1em;
+	background: none;
+	overflow: auto;
+	border: 1px solid #fce5d3;
+	background: #fff;
+	color: #222;
+}

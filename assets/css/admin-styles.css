@@ -1,0 +1,9 @@
+.trigger-warning-deluxe .field-row label {
+	display: inline;
+}
+
+.trigger-warning-deluxe .field-row input,
+.trigger-warning-deluxe .field-row textarea {
+	display: block;
+	margin: .5em 0;
+}
