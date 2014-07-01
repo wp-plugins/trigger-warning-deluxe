@@ -12,23 +12,29 @@ Warn your readers of potentially traumatic content.
 
 == Description ==
 
-Trauma trigger is an experience that triggers a traumatic memory in someone who has experienced trauma. A trigger is thus a troubling reminder of a traumatic event, although the trigger itself
+A trauma trigger is an experience that triggers a traumatic memory in someone who has experienced trauma. A trigger is thus a troubling reminder of a traumatic event, although the trigger itself
 need not be frightening or traumatic.
 
-Triggers can be quite diverse, appearing in the form of individual people, places, noises, images, smells, tastes, emotions, animals, films, scenes within films, dates of the year,
-tones of voice, body positions, bodily sensations, weather conditions, time factors, or combinations thereof. Triggers can be subtle and difficult to anticipate, and can sometimes
-exacerbate post-traumatic stress disorder, a condition in which sufferers cannot control the recurrence of emotional or physical symptoms, or of repressed memory.
-A trauma trigger may also be referred to as a trauma stimulus or a trauma stressor.
-
 Trigger Warning Deluxe is a great way of giving your readers a heads up in what to expect in articles containing potential triggers.
+
+= Features =
+
+* Flag posts as potentially triggering with the click of a checkbox
+* Append a trigger warning to the titles of your posts and present a popup describing why the post is flagged as triggering
+* Customize the default trigger warning label and warning message in the administrative panel
+* Optionally override the defaults with post-specific labels and warnings while editing posts
+* Replace triggering inline content with a trigger warning & content toggle by using a [triggerwarning] shortcode
 
 == Installation ==
 
 1. Unpack the plugin zip and upload the contents to the /wp-content/plugins/ directory. Alternatively, upload the plugin zip via the install screen within the WordPress Plugins manager
 2. Activate the plugin through the Plugins manager in WordPress
-3. Enable Trigger Warnings in the Edit Post page and veil inline content with the [triggerwarning][/triggerwarning] shortcode.
+3. Customize the plugin under Trigger Warning Deluxe in the admin menu.
 
 == Screenshots ==
+1. Flag posts as triggering in the post editor and optionally override the default label and warning message.
+2. Customize the default trigger label and label.
+3. Trigger posts warn users with a popup.
 
 == Changelog ==
 
