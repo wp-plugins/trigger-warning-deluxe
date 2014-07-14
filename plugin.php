@@ -3,7 +3,7 @@
 Plugin Name: Trigger Warning Deluxe
 Plugin URI: http://portfolio.planetjon.ca/projects/trigger-warning-deluxe/
 Description: Warn your readers of potentially traumatic content.
-Version: 1.0.1
+Version: 1.0.2
 Requires at least: 3.5.0
 Tested up to: 3.9.1
 Author: Jonathan Weatherhead
@@ -20,7 +20,7 @@ if( ! twd_meets_requirements() ) {
 include_once plugin_dir_path( __file__ ) . 'core-plugin.php';
 include_once plugin_dir_path( __file__ ) . 'wordpress-plugin.php';
 
-if( is_admin() )
+if( is_admin() && ! defined( 'DOING_AJAX' ) )
 	include_once plugin_dir_path( __file__ ) . 'admin-plugin.php';
 
 register_activation_hook( __FILE__, 'twd_activate' );

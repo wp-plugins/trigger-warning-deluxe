@@ -17,8 +17,8 @@ Visit the official <a target="_blank" title="Trigger Warning Deluxe project page
 </p>
 
 <p>
-A lot of hard work goes into maintaining this theme, providing your site visitors with the best possible browsing experience.
-If you like Blogfolio, whaddaya say to buying me a beer?
+A lot of hard work goes into maintaining this plugin, providing your site visitors with the best possible browsing experience.
+If you like Trigger Warning Deluxe, whaddaya say to buying me a beer?
 </p>
 
 <div class="buy-me-a-beer">

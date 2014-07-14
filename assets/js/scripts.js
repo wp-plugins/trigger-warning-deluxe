@@ -12,15 +12,16 @@ jQuery(function($){
 	});
 
 	$('.trigger-warning-deluxe.inline-warning').each(function(i, e){
-		$this = $(this);
-		$this.addClass('veiled');
-		$('<strong/>').addClass('reveal').css('cursor', 'pointer').attr('title', 'reveal content').text($this.attr('title')).prependTo($this);
+		$(this).addClass('veiled');
+		$('<strong/>').addClass('reveal').css('cursor', 'pointer').attr('title', 'reveal content').text(this.title).prependTo(this);
 	});
 
 	$('.trigger-warning-deluxe.inline-warning')
 	.on('click', '.reveal', function(e){
-		$(this).parent().removeClass('veiled');
-		$(this).parent().children('.warning, .reveal').remove();
+		$(this).parent()
+		.removeClass('veiled')
+		.children('.warning, .reveal')
+			.remove();
 	})
 	.appendTo('.trigger-warning-deluxe.inline-warning');
 })

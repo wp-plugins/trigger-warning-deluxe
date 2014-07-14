@@ -102,10 +102,12 @@ class TriggerWarningDeluxe {
 		$trigger = $this->getPostTriggerData( $postid );
 
 		if( $trigger->has_trigger) {
+			$warninglabel = $trigger->warning_label or $warninglabel = $this->config( 'default-warning-label' );
+			$warninglabel = $this->apiBridge->filter( 'twd-post-title-warning', array( $warninglabel, $postid ) );
 			$warning = $trigger->warning or $warning = $this->config( 'default-warning' );
 			$warning = $this->apiBridge->filter( 'twd-post-warning', array( $warning, $postid ) );
 
-			return $this->renderTemplate( 'views/common/postwarning', array( 'content' => $content, 'warning' => $warning ) );
+			return $this->renderTemplate( 'views/common/postwarning', array( 'content' => $content, 'warninglabel' => $warninglabel, 'warning' => $warning ) );
 		}
 		else {
 			return $content;

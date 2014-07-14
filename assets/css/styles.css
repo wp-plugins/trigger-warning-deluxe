@@ -8,7 +8,7 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: #ec7c23;
+	background-color: #000;
 	opacity: .8;
 	filter: Alpha(Opacity=80);
 }
@@ -19,7 +19,7 @@
 
 .trigger-warning-dialog.ui-widget {
 	font-size: 1.1em;
-	border: 1px solid #fce5d3;
+	border: 1px solid #fcecec;
 	background: #fff;
 	color: #222;
 	z-index: 999;
@@ -28,17 +28,17 @@
 
 .trigger-warning-dialog.ui-dialog {
 	overflow: hidden;
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	padding: .25em;
 	outline: 0;
-	background: #de5626;
+	background: #444;
 }
 
 .trigger-warning-dialog.ui-dialog .ui-dialog-titlebar {
-	padding: .5em 1em;
 	position: relative;
+	padding: .5em 1em;
 }
 
 .ui-dialog .ui-dialog-titlebar-close {
@@ -50,7 +50,7 @@
 }
 
 .trigger-warning-dialog.ui-dialog .ui-dialog-title {
-	color: #222;
+	color: #fcecec;
 	font-weight: bold;
 }
 
@@ -60,7 +60,7 @@
 	padding: .5em 1em;
 	background: none;
 	overflow: auto;
-	border: 1px solid #fce5d3;
-	background: #fff;
+	border: 1px solid #fcecec;
+	background: #fcecec;
 	color: #222;
 }
