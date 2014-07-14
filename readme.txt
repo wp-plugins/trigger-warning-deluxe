@@ -38,7 +38,7 @@ Trigger Warning Deluxe is a great way of giving your readers a heads up in what 
 
 == Changelog ==
 
-=1.0.2=
+= 1.0.2 =
 * Custom trigger warning title labels now appear in the warning popup instead of automatically using the default.
 * Tweaked colours of warning popup to something more neutral. Custom colours will be coming in a more major update.
 
