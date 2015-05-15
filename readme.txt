@@ -3,8 +3,8 @@ Contributors: jweathe
 Donate link: http://jonathanweatherhead.com
 Tags: trigger warning, trauma, sensitivity, content rating
 Requires at least: 3.5.0
-Tested up to: 3.9.1
-Stable tag: 1.0.2
+Tested up to: 4.2.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,6 +37,9 @@ Trigger Warning Deluxe is a great way of giving your readers a heads up in what 
 3. Trigger posts warn users with a popup.
 
 == Changelog ==
+
+= 1.0.3 =
+* Internal tune-up to ensure compatibility with more recent WordPress and PHP versions.
 
 = 1.0.2 =
 * Custom trigger warning title labels now appear in the warning popup instead of automatically using the default.

@@ -4,7 +4,7 @@
  * Implements application integration & global functionality (settings)
  */
 class TriggerWarningDeluxe {
-	const version = '0.9.9';
+	const version = '1.0.2';
 	const slug = 'trigger-warning-deluxe';
 
 	private $apiBridge;
@@ -26,23 +26,25 @@ class TriggerWarningDeluxe {
 		if( ! is_array( $this->config ) )
 			throw new Exception( 'Plugin config not loaded' );
 
-		if( $key !== null )
-			return @$this->config[ $key ];
-		else
-			return $this->config;
+		return isset( $key ) ? $this->config[ $key ] : $this->config;
 	}
 
 	/**
 	 * Call to load plugin
 	 */
 	function load() {
-		$this->config = $this->apiBridge->loadConfig();
+		$defaults = array(
+			'version' => self::version,
+			'default-warning-label' => 'Trigger Warning',
+			'default-warning' => 'Be aware that the following content may contain troubling reminders of a traumatic event.',
+			'default-inline-title' => 'Content flagged as a potential trauma-trigger'
+		);
+
+		$this->config = array_merge( $defaults, $this->apiBridge->loadConfig() );
 	}
 
 	/**
 	 * Call to install this plugin.
-	 *
-	 * @internal
 	 */
 	function install() {
 		$this->apiBridge->install();
@@ -64,11 +66,12 @@ class TriggerWarningDeluxe {
 	 * @return String Content with trigger warning.
 	 */
 	function getInlineTriggerWarning( $content, $atts = array() ) {
-		$title = isset( $atts[ 'title' ]  ) ? $atts[ 'title' ] : 'Content flagged as a potential trauma-trigger';
-		$content = $this->apiBridge->filter( 'twd-inline-warning', array( $content, $atts ) );
-		$warning = $this->config( 'default-warning' );
+		$title = isset( $atts[ 'title' ]  ) ? $atts[ 'title' ] : $this->config( 'default-inline-title' );
+		$title = $this->apiBridge->filter( 'twd-post-inline-title-warning', array( $title, $postid ) );
+		$warning = isset( $atts[ 'warning' ]  ) ? $atts[ 'warning' ] : $this->config( 'default-warning' );
+		$warning = $this->apiBridge->filter( 'twd-post-warning', array( $warning, $postid ) );
 
-		return $this->renderTemplate( 'views/common/inlinewarning', array( 'title' => $title, 'content' => $content, 'warning' => $warning ) );
+		return $this->presentView( 'common/inlinewarning', array( 'content' => $content, 'title' => $title, 'warning' => $warning ) );
 	}
 
 	/**
@@ -79,17 +82,15 @@ class TriggerWarningDeluxe {
 	 * @return String Title decorated with trigger warning.
 	 */
 	function getTitleTriggerWarning( $postid, $title ) {
-		$trigger = $this->getPostTriggerData( $postid );
+		$trigger = $this->getTriggerWarningDataForPost( $postid );
 
-		if( $trigger->has_trigger ) {
-			$warninglabel = $trigger->warning_label or $warninglabel = $this->config( 'default-warning-label' );
-			$warninglabel = $this->apiBridge->filter( 'twd-post-title-warning', array( $warninglabel, $postid ) );
-
-			return $this->renderTemplate( 'views/common/posttitlewarning', array( 'title' => $title, 'warninglabel' => $warninglabel ) );
-		}
-		else {
+		if( ! $trigger->has_trigger )
 			return $title;
-		}
+
+		$warninglabel = $trigger->warning_label or $warninglabel = $this->config( 'default-warning-label' );
+		$warninglabel = $this->apiBridge->filter( 'twd-post-warning-label', array( $warninglabel, $postid ) );
+
+		return $this->presentView( 'common/posttitlewarning', array( 'title' => $title, 'warninglabel' => $warninglabel ) );
 	}
 
 	/**
@@ -99,19 +100,17 @@ class TriggerWarningDeluxe {
 	 * @return String The trigger warning.
 	 */
 	function getPostTriggerWarning( $postid, $content ) {
-		$trigger = $this->getPostTriggerData( $postid );
+		$trigger = $this->getTriggerWarningDataForPost( $postid );
 
-		if( $trigger->has_trigger) {
-			$warninglabel = $trigger->warning_label or $warninglabel = $this->config( 'default-warning-label' );
-			$warninglabel = $this->apiBridge->filter( 'twd-post-title-warning', array( $warninglabel, $postid ) );
-			$warning = $trigger->warning or $warning = $this->config( 'default-warning' );
-			$warning = $this->apiBridge->filter( 'twd-post-warning', array( $warning, $postid ) );
-
-			return $this->renderTemplate( 'views/common/postwarning', array( 'content' => $content, 'warninglabel' => $warninglabel, 'warning' => $warning ) );
-		}
-		else {
+		if( ! $trigger->has_trigger )
 			return $content;
-		}
+
+		$warninglabel = $trigger->warning_label or $warninglabel = $this->config( 'default-warning-label' );
+		$warninglabel = $this->apiBridge->filter( 'twd-post-warning-label', array( $warninglabel, $postid ) );
+		$warning = $trigger->warning or $warning = $this->config( 'default-warning' );
+		$warning = $this->apiBridge->filter( 'twd-post-warning', array( $warning, $postid ) );
+
+		return $this->presentView( 'common/postwarning', array( 'content' => $content, 'warninglabel' => $warninglabel, 'warning' => $warning ) );
 	}
 
 	/**
@@ -120,15 +119,15 @@ class TriggerWarningDeluxe {
 	 * @param integer $postid The post for which the trigger data is to be fetched.
 	 * @return TWD_TriggerMeta Trigger data.
 	 */
-	function getPostTriggerData( $postid ) {
-		return new TWD_TriggerMeta( $this->apiBridge->fetchTriggerDataForPost( $postid ) );
+	function getTriggerWarningDataForPost( $postid ) {
+		return new TWD_TriggerMeta( $this->apiBridge->getTriggerWarningDataForPost( $postid ) );
 	}
 
-	function savePostTriggerData( $postid, TWD_TriggerMeta $trigger ) {
+	function persistTriggerWarningDataForPost( $postid, TWD_TriggerMeta $trigger ) {
 		if( $trigger->has_trigger )
-			return $this->apiBridge->persistTriggerDataForPost( $postid, $trigger->asMeta() );
-		else 
-			return $this->apiBridge->removeTriggerDataFromPost( $postid );
+			return $this->apiBridge->persistTriggerWarningDataForPost( $postid, $trigger->asMeta() );
+		else
+			return $this->apiBridge->removeTriggerWarningDataFromPost( $postid );
 	}
 
 	/**
@@ -138,10 +137,10 @@ class TriggerWarningDeluxe {
 	 * @param Array $parameters The parameters that will fill the template.
 	 * @return String The rendered template.
 	 */
-	private function renderTemplate( $template, array $parameters ) {
+	private function presentView( $template, array $parameters ) {
 		extract( $parameters );
 		ob_start();
-		include "{$template}.php";
+		include "views/{$template}.php";
 		$content = ob_get_contents();
 		ob_end_clean();
 
@@ -157,9 +156,9 @@ interface TWD_APIBridge {
 	function uninstall();
 	function loadConfig();
 
-	function fetchTriggerDataForPost( $postid );
-	function persistTriggerDataForPost( $postid, $trigger );
-	function removeTriggerDataFromPost( $postid );
+	function getTriggerWarningDataForPost( $postid );
+	function persistTriggerWarningDataForPost( $postid, $trigger );
+	function removeTriggerWarningDataFromPost( $postid );
 
 	function filter( $filter, $parameters );
 }
@@ -202,5 +201,3 @@ class TWD_TriggerMeta {
 		return $this->meta[ $key ];
 	}
 }
-
-?>

@@ -3,9 +3,9 @@
 Plugin Name: Trigger Warning Deluxe
 Plugin URI: http://portfolio.planetjon.ca/projects/trigger-warning-deluxe/
 Description: Warn your readers of potentially traumatic content.
-Version: 1.0.2
+Version: 1.0.3
 Requires at least: 3.5.0
-Tested up to: 3.9.1
+Tested up to: 4.2.2
 Author: Jonathan Weatherhead
 Author URI: http://jonathanweatherhead.com
 Text Domain: trigger-warning-deluxe
@@ -40,11 +40,9 @@ function twd_uninstall() {
 }
 
 function twd_requirements_notice() {
-	printf( '<div class="error"><p>%s</p></div>', __( 'Trigger Warning Deluxe requires PHP 5.3 or later to run. Please update your server.', 'trigger-warning-deluxe' ) );
+	printf( '<div class="error"><p>%s</p></div>', __( 'Your server doesn\'t meet the requirements for running Trigger Warning Deluxe. Please update your server.', 'trigger-warning-deluxe' ) );
 }
 
 function twd_meets_requirements() {
-	return true; //version_compare( PHP_VERSION, '5.3.0' ) >= 0;
+	return true;
 }
-
-?>

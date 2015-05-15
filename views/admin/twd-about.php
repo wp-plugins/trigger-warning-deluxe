@@ -13,7 +13,7 @@ A trauma trigger may also be referred to as a trauma stimulus or a trauma stress
 </blockquote>
 
 <p>
-Visit the official <a target="_blank" title="Trigger Warning Deluxe project page" href="http://portfolio.planetjon.ca/projects/trigger-warning-deluxe/">Trigger Warning Deluxe project page</a> for more information.
+Visit the official <a target="_blank" title="Trigger Warning Deluxe project page" href="https://wordpress.org/plugins/trigger-warning-deluxe/">Trigger Warning Deluxe project page</a> for more information.
 </p>
 
 <p>

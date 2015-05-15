@@ -1,11 +1,7 @@
 <?php
-/**
- * Loads administrative capabilities for configuring Trigger Warning Deluxe.
- */
 
 /**
- * Sets up custom options administrative panel and menu.
- *
+ * Loads administrative capabilities for configuring Trigger Warning Deluxe.
  */
 class TWD_WordPressAdminIntegration {
 	const admin_page = 'trigger-warning-deluxe';
@@ -38,7 +34,7 @@ class TWD_WordPressAdminIntegration {
 			'default-warning-label',
 			__( 'Default warning label', 'trigger-warning-deluxe' ),
 			false,
-			__( 'The default warning label is displayed in the post title if not specified in the post', 'trigger-warning-deluxe' )
+			__( 'The default warning label is displayed in the post title if not specified by the post', 'trigger-warning-deluxe' )
 		);
 
 		$this->settingsManager->addField(
@@ -46,7 +42,7 @@ class TWD_WordPressAdminIntegration {
 			'default-warning',
 			__( 'Default warning', 'trigger-warning-deluxe' ),
 			false,
-			__( 'The default warning is displayed in the post if not specified in the post', 'trigger-warning-deluxe' )
+			__( 'The default warning is displayed in the post if not specified by the post', 'trigger-warning-deluxe' )
 		);
 	}
 
@@ -58,7 +54,7 @@ class TWD_WordPressAdminIntegration {
 
 	// To be hooked into admin_menu.
 	function admin_menu() {
-		$pagehook = add_menu_page(  
+		add_menu_page(
 			__( 'Trigger Warning Deluxe', 'trigger-warning-deluxe' ),
 			__( 'Trigger Warning Deluxe', 'trigger-warning-deluxe' ),
 			'manage_options',
@@ -85,7 +81,7 @@ class TWD_WordPressAdminIntegration {
 	}
 
 	function displayTriggerWarningMetabox( $post ) {
-		$trigger = $this->plugin->getPostTriggerData( $post->ID );
+		$trigger = $this->plugin->getTriggerWarningDataForPost( $post->ID );
 		$defaultWarningLabel = $this->plugin->config( 'default-warning-label' );
 		$defaultWarning = $this->plugin->config( 'default-warning' );
 
@@ -93,10 +89,10 @@ class TWD_WordPressAdminIntegration {
 	}
 
 	function save_post( $postid ) {
-		$nonce = isset( $_POST[ 'trigger_warning_deluxe_editbox_nonce' ] ) ? $_POST[ 'trigger_warning_deluxe_editbox_nonce' ] : false;
-		$rawtrigger = isset( $_POST[ 'trigger_warning_deluxe' ] ) ? $_POST[ 'trigger_warning_deluxe' ] : array();
+		$nonce = filter_input( INPUT_POST, 'trigger_warning_deluxe_editbox_nonce', FILTER_DEFAULT );
+		$rawtrigger = filter_input( INPUT_POST, 'trigger_warning_deluxe', FILTER_DEFAULT, array( 'default' => array(), 'flags' => array( FILTER_REQUIRE_ARRAY ) ) );
 
-		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+		if( defined( 'DOING_AUTOSAVE' ) )
 			return;
 
 		if( ! current_user_can( 'edit_post', $postid ) )
@@ -107,7 +103,7 @@ class TWD_WordPressAdminIntegration {
 
 		//save trigger customization
 		$trigger = new TWD_TriggerMeta( $rawtrigger );
-		$this->plugin->savePostTriggerData( $postid, $trigger );
+		$this->plugin->persistTriggerWarningDataForPost( $postid, $trigger );
 	}
 
 	function manage_posts_columns( $columns ) {
@@ -117,9 +113,9 @@ class TWD_WordPressAdminIntegration {
 
 	function manage_posts_custom_column( $column ) {
 		if( TriggerWarningDeluxe::slug == $column ) {
-			$trigger = $this->plugin->getPostTriggerData( get_the_id() );
-			$defaultWarningLabel = $this->plugin->config( 'default-warning-label' );
-			$defaultWarning = $this->plugin->config( 'default-warning' );
+			$trigger = $this->plugin->getTriggerWarningDataForPost( get_the_id() );
+			$defaultwarninglabel = $this->plugin->config( 'default-warning-label' );
+			$defaultwarning = $this->plugin->config( 'default-warning' );
 
 			include 'views/admin/posttriggercolumn.php';
 		}
@@ -151,7 +147,7 @@ class TWD_WordPressAdminSettings {
 
 	// Renders a textfield.
 	function textfieldRenderer( $args ) {
-		$setting = @ $this->config[ $args[ 'id' ] ];
+		$setting = $this->config[ $args[ 'id' ] ];
 
 		$id = TriggerWarningDeluxe::slug . '_' . $args[ 'id' ];
 		$name = TriggerWarningDeluxe::slug . "[{$args[ 'id' ]}]";
@@ -163,7 +159,7 @@ class TWD_WordPressAdminSettings {
 
 	// Renders a textfield.
 	function textareaRenderer( $args ) {
-		$setting = @ $this->config[ $args[ 'id' ] ];
+		$setting = $this->config[ $args[ 'id' ] ];
 
 		$id = TriggerWarningDeluxe::slug . '_' . $args[ 'id' ];
 		$name = TriggerWarningDeluxe::slug . "[{$args[ 'id' ]}]";
@@ -176,7 +172,7 @@ class TWD_WordPressAdminSettings {
 
 	// Renders a colourpicker field. Gracefully falls back to regular input box when not supported.
 	function colorpickerRenderer( $args ) {
-		$setting = @ $this->config[ $args[ 'id' ] ];
+		$setting = $this->config[ $args[ 'id' ] ];
 
 		$id = TriggerWarningDeluxe::slug . '_' . $args[ 'id' ];
 		$name = TriggerWarningDeluxe::slug . "[{$args[ 'id' ]}]";
@@ -188,7 +184,7 @@ class TWD_WordPressAdminSettings {
 
 	// Renders a checkbox. If multiple values are provided, an option group will be rendered.
 	function checkboxRenderer( $args ) {
-		$setting = @ (array) $this->config[ $args[ 'id' ] ];
+		$setting = (array) $this->config[ $args[ 'id' ] ];
 		$multivalue = is_array( $args[ 'value' ] );
 
 		$id = TriggerWarningDeluxe::slug . '_' . $args[ 'id' ];
@@ -205,7 +201,7 @@ class TWD_WordPressAdminSettings {
 
 	// Renders a radiobox. More than one value should be provided as an option group.
 	function radiobuttonRenderer( $args ) {
-		$setting = @ $this->config[ $args[ 'id' ] ];
+		$setting = $this->config[ $args[ 'id' ] ];
 		$multivalue = false;
 
 		$id = TriggerWarningDeluxe::slug . '_' . $args[ 'id' ];
@@ -246,7 +242,7 @@ class TWD_WordPressAdminSettings {
 					break;
 				}
 				break;
-	
+
 				case 'colorpicker' :
 
 				if( $value && ! preg_match( '/^#([[:xdigit:]]{3}|[[:xdigit:]]{6})$/', $value ) ) {
@@ -257,7 +253,7 @@ class TWD_WordPressAdminSettings {
 
 				case 'checkbox' :
 				case 'radiobox' :
-				
+
 				if( is_scalar( $sanction[ 'value' ] ) && $value != $sanction[ 'value' ] ) {
 					$valid = false;
 					add_settings_error( TriggerWarningDeluxe::slug, 'invalid-value', "'{$sanction[ 'title' ]}' <strong>Invalid input</strong>" );
@@ -271,10 +267,11 @@ class TWD_WordPressAdminSettings {
 				default :
 			}
 
-			if( $valid ) $validated[ $field ] = $value;
+			if( $valid )
+				$validated[ $field ] = $value;
 		}
 
-		
+
 		return apply_filters( 'twd_validate_fields', $validated, $fields );
 	}
 
@@ -299,5 +296,3 @@ add_action( 'save_post', array( TWD_WordPressAdminIntegration::instance(), 'save
 
 add_filter( 'manage_posts_columns', array( TWD_WordPressAdminIntegration::instance(), 'manage_posts_columns' ) );
 add_filter( 'manage_posts_custom_column', array( TWD_WordPressAdminIntegration::instance(), 'manage_posts_custom_column' ) );
-
-?>

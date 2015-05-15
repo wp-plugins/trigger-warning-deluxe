@@ -2,11 +2,7 @@
 
 class TWD_WordPressBridge implements TWD_APIBridge {
 	function install() {
-		return !! add_option( TriggerWarningDeluxe::slug, array(
-			'version' => TriggerWarningDeluxe::version,
-			'default-warning-label' => 'Trigger Warning',
-			'default-warning' => 'Be aware that the following content may contain troubling reminders of a traumatic event.'
-		) );
+		return true;
 	}
 
 	function uninstall() {
@@ -17,16 +13,17 @@ class TWD_WordPressBridge implements TWD_APIBridge {
 		return get_option( TriggerWarningDeluxe::slug, array() );
 	}
 
-	function fetchTriggerDataForPost( $postid ) {
+	function getTriggerWarningDataForPost( $postid ) {
 		$trigger = get_post_meta( $postid, TriggerWarningDeluxe::slug, true ) or $trigger = array();
+
 		return $trigger;
 	}
 
-	function persistTriggerDataForPost( $postid, $trigger ) {
+	function persistTriggerWarningDataForPost( $postid, $trigger ) {
 		return !! update_post_meta( $postid, TriggerWarningDeluxe::slug, $trigger );
 	}
 
-	function removeTriggerDataFromPost( $postid ) {
+	function removeTriggerWarningDataFromPost( $postid ) {
 		return !! delete_post_meta( $postid, TriggerWarningDeluxe::slug );
 	}
 
@@ -62,7 +59,7 @@ class TWD_WordPressIntegration {
 
 	/**
 	 * Called when plugins are initialized.
-	 * 
+	 *
 	 * @internal
 	 */
 	function init() {
@@ -88,8 +85,8 @@ class TWD_WordPressIntegration {
 	}
 
 	function post_class( $classes ) {
-		if( $this->plugin->getPostTriggerData( get_the_ID() )->has_trigger )
-			$classes[] = 'has-trigger-warning';
+		if( $this->plugin->getTriggerWarningDataForPost( get_the_ID() )->has_trigger )
+			$classes []= 'has-trigger-warning';
 
         return $classes;
 	}
@@ -137,5 +134,3 @@ add_filter( 'the_content', array( TWD_WordPressIntegration::instance(), 'content
 add_filter( 'the_excerpt', array( TWD_WordPressIntegration::instance(), 'excerptStub' ) );
 
 add_filter( 'post_class', array( TWD_WordPressIntegration::instance(), 'post_class' ) );
-
-?>
